@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler
@@ -13,11 +14,13 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.x05nelsonm.matricescalculatorchallenge.MatrixStringValues
 import com.x05nelsonm.matricescalculatorchallenge.R
+import com.x05nelsonm.matricescalculatorchallenge.TwoByTwoMatrix
 import com.x05nelsonm.matricescalculatorchallenge.showToast
 
 class HomeController : Controller() {
 
     private lateinit var multiplyButton: Button
+    private lateinit var layoutLower: LinearLayout
 
     // Matrix A
     private lateinit var etA11: EditText
@@ -37,16 +40,11 @@ class HomeController : Controller() {
     private lateinit var tvA21: TextView
     private lateinit var tvA22: TextView
 
-    // Matrix B
-    private lateinit var tvB11: TextView
-    private lateinit var tvB12: TextView
-    private lateinit var tvB21: TextView
-    private lateinit var tvB22: TextView
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
         val view = inflater.inflate(R.layout.layout_home_controller, container, false)
 
         multiplyButton = view.findViewById(R.id.button_multiply)
+        layoutLower = view.findViewById(R.id.layout_lower)
 
         // Matrix A EditText Views
         etA11 = view.findViewById(R.id.edit_text_a11)
@@ -66,16 +64,11 @@ class HomeController : Controller() {
         tvA21 = view.findViewById(R.id.text_view_a21)
         tvA22 = view.findViewById(R.id.text_view_a22)
 
-        // Matrix B TextViews
-        tvB11 = view.findViewById(R.id.text_view_b11)
-        tvB12 = view.findViewById(R.id.text_view_b12)
-        tvB21 = view.findViewById(R.id.text_view_b21)
-        tvB22 = view.findViewById(R.id.text_view_b22)
-
         if (router.backstackSize > 1) {
             showEditTextViews(false)
-            multiplyButton.visibility = View.INVISIBLE
-            setTextViewValues(MatrixStringValues.newValuesMatrixA, MatrixStringValues.newValuesMatrixB)
+            multiplyButton.visibility = View.GONE
+            layoutLower.visibility = View.GONE
+            setTextViewValues(MatrixStringValues.newValuesMatrix)
         } else {
             showEditTextViews(true)
         }
@@ -103,12 +96,6 @@ class HomeController : Controller() {
             tvA12.visibility = View.GONE
             tvA21.visibility = View.GONE
             tvA22.visibility = View.GONE
-
-            // Matrix B TextViews
-            tvB11.visibility = View.GONE
-            tvB12.visibility = View.GONE
-            tvB21.visibility = View.GONE
-            tvB22.visibility = View.GONE
         } else {
             // Matrix A EditText Views
             etA11.visibility = View.GONE
@@ -127,12 +114,6 @@ class HomeController : Controller() {
             tvA12.visibility = View.VISIBLE
             tvA21.visibility = View.VISIBLE
             tvA22.visibility = View.VISIBLE
-
-            // Matrix B TextViews
-            tvB11.visibility = View.VISIBLE
-            tvB12.visibility = View.VISIBLE
-            tvB21.visibility = View.VISIBLE
-            tvB22.visibility = View.VISIBLE
         }
 
     }
@@ -171,15 +152,19 @@ class HomeController : Controller() {
                     etB22String
                 )
             ) {
-                val matrixA = loadTwoByTwoMatrix(etA11String, etA12String, etA21String, etA22String)
-                val matrixB = loadTwoByTwoMatrix(etB11String, etB12String, etB21String, etB22String)
+                val matrixA = TwoByTwoMatrix(loadTwoByTwoMatrix(etA11String, etA12String, etA21String, etA22String))
+                val matrixB = TwoByTwoMatrix(loadTwoByTwoMatrix(etB11String, etB12String, etB21String, etB22String))
 
                 // do multiplication
+                val matrixC = matrixA * matrixB
                 // turn back into strings
 
-                MatrixStringValues.newValuesMatrixA = setTextArray(etA11String, etA12String, etA21String, etA22String)
-                MatrixStringValues.newValuesMatrixB = setTextArray(etB11String, etB12String, etB21String, etB22String)
-
+                MatrixStringValues.newValuesMatrix = setTextArray(
+                    matrixC[0][0].toString(),
+                    matrixC[0][1].toString(),
+                    matrixC[1][0].toString(),
+                    matrixC[1][1].toString()
+                )
 
                 router.pushController(
                     RouterTransaction.with(HomeController())
@@ -245,18 +230,12 @@ class HomeController : Controller() {
         return twoByTwoMatrix
     }
 
-    private fun setTextViewValues(arrayA: Array<String>, arrayB: Array<String>) {
+    private fun setTextViewValues(arrayA: Array<String>) {
 
         // Matrix A
         tvA11.text = arrayA[0]
         tvA12.text = arrayA[1]
         tvA21.text = arrayA[2]
         tvA22.text = arrayA[3]
-
-        // Matrix B
-        tvB11.text = arrayB[0]
-        tvB12.text = arrayB[1]
-        tvB21.text = arrayB[2]
-        tvB22.text = arrayB[3]
     }
 }
