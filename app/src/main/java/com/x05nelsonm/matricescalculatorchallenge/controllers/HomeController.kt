@@ -68,7 +68,8 @@ class HomeController : Controller() {
     }
 
     private fun checkNotEmpty(x11: String, x12: String, x21: String, x22: String): Boolean {
-        val tempArray = Array(4) { "" }
+        val tempArray = setArray(x11, x12, x21, x22)
+
         var count = 0
 
         tempArray.forEach {
@@ -78,5 +79,14 @@ class HomeController : Controller() {
         }
 
         return (count == 4)
+    }
+
+    private fun setArray(x11: String, x12: String, x21: String, x22: String): Array<String> {
+        val tempArray = Array(4) { "" }
+        tempArray[0] = x11
+        tempArray[1] = x12
+        tempArray[2] = x21
+        tempArray[3] = x22
+        return tempArray
     }
 }
