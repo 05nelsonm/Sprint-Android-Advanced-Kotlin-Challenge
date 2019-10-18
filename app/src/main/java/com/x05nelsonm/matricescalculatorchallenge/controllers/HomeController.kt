@@ -14,7 +14,7 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.x05nelsonm.matricescalculatorchallenge.MatrixStringValues
 import com.x05nelsonm.matricescalculatorchallenge.R
-import com.x05nelsonm.matricescalculatorchallenge.TwoByTwoMatrix
+import com.x05nelsonm.matricescalculatorchallenge.model.TwoByTwoMatrix
 import com.x05nelsonm.matricescalculatorchallenge.showToast
 
 class HomeController : Controller() {
@@ -152,8 +152,12 @@ class HomeController : Controller() {
                     etB22String
                 )
             ) {
-                val matrixA = TwoByTwoMatrix(loadTwoByTwoMatrix(etA11String, etA12String, etA21String, etA22String))
-                val matrixB = TwoByTwoMatrix(loadTwoByTwoMatrix(etB11String, etB12String, etB21String, etB22String))
+                val matrixA = TwoByTwoMatrix(
+                    loadTwoByTwoMatrix(etA11String, etA12String, etA21String, etA22String)
+                )
+                val matrixB = TwoByTwoMatrix(
+                    loadTwoByTwoMatrix(etB11String, etB12String, etB21String, etB22String)
+                )
 
                 // do multiplication
                 val matrixC = matrixA * matrixB
