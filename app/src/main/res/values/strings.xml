@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MatricesCalculatorChallenge</string>
+    <string name="multiply">Multiply</string>
 </resources>
